@@ -1,110 +1,20 @@
-Data Compression. Scrambling  - rought notes
+Data Compression. Scrambling.
 
-This doesn't compress, it scrambles a compressed file for the hope of better compression.
-By having a reveseable function, the data could be organised into patterns that 'could?' be compressed again. 
+This doesn’t compress, it scrambles a compressed file for the hope of better compression.
+By having a reveseable function, the data could be organised into patterns that ‘could?’ be compressed again.
 
 DATA COMPRESSION through randoimisation. I will test on the byte level before I segment on to the bit level.
 
-binaray bit data byte 0001 1011
-logial not operation 1110 0100
+My latest plan it to work on the data at the bit level, basic splitting the data into two file.
+The split sequence is decided by a byte value. 
+00000000 would split all the bits into Part 0
+11111111 would split all the bits into Part 1
+01010101 would split every other bit into Part 0 and Part 1
 
-if the byte sequence was x00,x01,x02,x03,x04,x05
-it would become this in hex xFF,xFE,xFD,xFC,xFB,xFA
+Using a byte as the split key I can have 255 pattern combinations. (well slightly less)
 
+Current code was a byte level split, but I think I will get better results by working at the bit level.
 
-Other bit operations like rolling bits left 1 where the high bit becomes the low bit.
-
-
-byte splitting, this will restructure the bytes sequence.example split every other byte into half two files that are then joined back into one. best with even filebyte size
-
-bytes 00,01,02,03,04,05new byte order 00.02.04.01.03.05
-
-
-The objective is to find new patters of compression that rar or zip can take advantage of.
-
-Using a byte as the order key I can have 255 sequence pattern combinations.
-The binaray repersentation is how the bites are divided into two.
-
-0 or 00000000 would copy all the bytes in order to a new file, so would 255 or 11111111 
-
-2 or 00000010 would could most of the bits in order apart from the 7th bit (Im counting from the left)
-
-for ($i = 0; $i < 255; $i++) {   //  process all sequence combinations
-     $bi=decbin($i);         // make it a binary string (of ture false flags)  
-     $c=0
-     for (each thebyte) {
-       if ($c = 8) then ($c=0); 
-       if $bi[$c] {                           // 
-            put thebyte in parta[]
-       } else {
-            put thebyte in partb[]  
-       }
-        $c++
-     }
-    $compressed=gzcompress($parta.$partb,9);
-}
-
-
-i scramble this. 
-
-1,2,3,4,5,6,7,8,9,0
-
-1,2,4,5,7,8,0  (size 7)
-3,6,9
-
-can i unscramble this. 
-
-1,2,4,5,7,8,0,3,6,9
-
--no-? as I don't know the correct order. To unshuffle I would need to know the size of partA so I can find where part B starts.  (I means adding 8+1(key) bytes to the file size) 
-
-A simple every other byte can be as I  know that half way is the middle point.
-1,3,5,7,9
-2,4,6,8,0
-
-1,3,5,7,9,2,4,6,8,0
-
-
-
-
-
-PHP compression  - gzcompress — http://www.phpbuilder.com/manual/en/function.gzcompress.php
-
-Compress a string
-    Description
-         $compressed_string = gzcompress ( $thebytes [, int $level ] )
-
-
-    1:<!DOCTYPE HTML >
-    2:<html lang="en">
-    3:    <head>
-    4:        <meta charset="UTF-8">
-    5:        <title>scramble</title>
-    6:    </head>
-    7:    <body>
-    8:        <?php
-    9:
-  10://Open file to compress.
-  11:$compress_this_file = 'test.zip ';
-  12:$filesize =filesize($compress_this_file);
-  13:$fhandle = fopen($compress_this_file,'rb');
-  14:$thebytes = fread($fhandle, $filesize);
-  15:fclose($fhandle);
-  16:
-  17:echo $thebytes[0].$thebytes[1];
-  18:echo '<br>string size '.strlen($thebytes).'<br>';
-  19:for ($i = 0; $i < $filesize; $i++) {
- 20:  echo strtoupper(dechex(ord($thebytes[$i]))).',';
-20a:  $thebytes[$i]=(~$thebytes[$i]);
-  21:}
- 22:$compressed = gzcompress($thebytes, 9);
-  22:?>
-  23:    </body>
-  24:</html>
-
-
-
- Noting every other bit got no savings.  reordering the bytes might work?
-
-
-
+My coding skills are not the bestest and writing it in PHP isn’t the fastest language, but I’m doing this to test a theory 
+and to have some fun coding. It’s a simple idea and I’m sure there are greater minds that have thought of doing this,
+But it’s for fun.
