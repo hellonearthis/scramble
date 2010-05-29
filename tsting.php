@@ -5,10 +5,8 @@
 function byte2bin($input)  // convert  BYTE  into an 8 binary repesentation
 {
   if (!is_string($input)) return null; // Sanity check
-  // Unpack as a hexadecimal string
-
-    $bb= decbin(ord($input));
-    $bb= str_repeat('0',(8-strlen($bb))).$bb; // make it 4 bits long
+    $bb= decbin(ord($input));          // make the byte into binary
+    $bb= str_repeat('0',(8-strlen($bb))).$bb; // make it 8 bits long as decbinstrips high bits
      return $bb;
 }
 
