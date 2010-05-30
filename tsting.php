@@ -4,17 +4,7 @@
 // I'm sure there are bugs that are caused by working with ascii test data and not hex data like a raw file would have
 // but ascii test data means the decoded can be read easyly,  maybe I should have use 0,1,2,3,4,5,6,7,8,9 but meh hind site
 
-function byte2bin($input)  // convert  BYTE  into an 8 binary repesentation (character)
-{    $bb= decbin(ord($input));          // make the byte into binary
-    $bb= str_repeat('0',(8-strlen($bb))).$bb; // make it 8 bits long as decbinstrips high bits
-     return $bb;
-}
-
-function dec2bin($input)// convert  BYTE  into an 8 binary repesentation (intiger)
-{   $bb= decbin($input);          // make the byte into binary
-    $bb= str_repeat('0',(8-strlen($bb))).$bb; // make it 8 bits long as decbinstrips high bits
-     return $bb;
-}
+include 'functions.php';
 
 $thebytes='that fox is  quick as'.  chr(4).chr(254);  // bytes to scramble, this will be the compress file.
 
@@ -45,28 +35,21 @@ echo $P1.' p1<br>';
 $p0len= strlen($P0);    // mid point used to unscramble the file.
 echo dechex($p0len).' lenght of part 0 in hex<br>';
 $nf=$P0.$P1;                                // nf is the new file in binary format
-                                                        // convert to hex like a raw zip file would be
-$sizeofbin=strlen($nf);
-$ix=0;  // index into binary file
-for($i=0; $i<=($sizeofbin/8); $i++) {
-    // get 8 bit and encode
-   $abyte = $nf[$ix].$nf[$ix+1].$nf[$ix+2].$nf[$ix+3].$nf[$ix+4].$nf[$ix+5].$nf[$ix+6].$nf[$ix+7];
-   // echo $abyte.'<br>';
-   $ix=$ix+8; // next byte
-   $ibyte= base_convert($abyte, 2, 16) ;  // bin to hex
-   echo $ibyte;
-}
 
-// next would be to joint the two files and convet it back to decimal and add the 1st byte as the scramblekey followed by a long word 8 bytes (x00000000) of the size of part 0
-echo '<br>';
-echo $nf[$p0len].$nf[$p0len+1].$nf[$p0len+2].$nf[$p0len+3].$nf[$p0len+4].$nf[$p0len+5].$nf[$p0len+6].$nf[$p0len+7];
 
+// convert to hex like a raw zip file would be
+echo binTohex($nf);
+
+
+// next would be to joint the two files and convet it back to decimal and
+//  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0
 
 //skey
 $pa='';   // store decode file
 
 $pac=0; // index into part a and b
 $pbc=0;
+$sizeofbin=strlen($nf);
 for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a byte at a time..... errrr
      for ($i=0; $i<=7; $i++){         // process it  the byte pulling it in bit by bit
         if(($skey[$i]=='0')){
@@ -82,16 +65,19 @@ for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a b
 echo '<br>decoded<br>';
 echo $pa.' pa<br>';
 
-$sizeofbin=strlen($pa);
-$ix=0;  // index into binary file
-for($i=0; $i<=($sizeofbin/8); $i++) {
-    // get 8 bit and encode
-   $abyte = $pa[$ix].$pa[$ix+1].$pa[$ix+2].$pa[$ix+3].$pa[$ix+4].$pa[$ix+5].$pa[$ix+6].$pa[$ix+7];
-   // echo $abyte.'<br>';
-   $ix=$ix+8; // next byte
-   $ibyte= base_convert($abyte, 2, 10) ;  // bin to dec
-   echo chr($ibyte);
-}
+
+// decode bin to acsii again
+echo binTochr($pa);
+//$sizeofbin=strlen($pa);
+//$ix=0;  // index into binary file
+//for($i=0; $i<=($sizeofbin/8); $i++) {
+//    // get 8 bit and encode
+//   $abyte = $pa[$ix].$pa[$ix+1].$pa[$ix+2].$pa[$ix+3].$pa[$ix+4].$pa[$ix+5].$pa[$ix+6].$pa[$ix+7];
+//   // echo $abyte.'<br>';
+//   $ix=$ix+8; // next byte
+//   $ibyte= base_convert($abyte, 2, 10) ;  // bin to dec
+//   echo chr($ibyte); // print that character
+//}
 
 
 
