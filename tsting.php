@@ -10,10 +10,10 @@ $thebytes='that fox is  quick as'.  chr(4).chr(254);  // bytes to scramble, this
 
 echo $thebytes.'<br>';
 
-$tb=str_split($thebytes); // convert input file into an array of bytes
+$tb=str_split($thebytes);         // convert input file into an array of bytes
 
 //  need to add for loop to cycle through split key (1-254) or just one key as this is the test area before working with compressed files.
-$scramkey=142;                       // scramble key set
+$scramkey=102;                       // scramble key set
 $skey=dec2bin($scramkey);  // convert to binary
 echo $skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].' scramble skey<br>';
 $P0='';
@@ -36,10 +36,8 @@ $p0len= strlen($P0);    // mid point used to unscramble the file.
 echo dechex($p0len).' lenght of part 0 in hex<br>';
 $nf=$P0.$P1;                                // nf is the new file in binary format
 
-
 // convert to hex like a raw zip file would be
-echo binTohex($nf);
-
+echo binTohex($nf);  // not needed really in the test file
 
 // next would be to joint the two files and convet it back to decimal and
 //  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0
@@ -63,23 +61,10 @@ for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a b
 }
 
 echo '<br>decoded<br>';
-echo $pa.' pa<br>';
-
+echo $pa.' pa<br>'; // decoded bit file
 
 // decode bin to acsii again
 echo binTochr($pa);
-//$sizeofbin=strlen($pa);
-//$ix=0;  // index into binary file
-//for($i=0; $i<=($sizeofbin/8); $i++) {
-//    // get 8 bit and encode
-//   $abyte = $pa[$ix].$pa[$ix+1].$pa[$ix+2].$pa[$ix+3].$pa[$ix+4].$pa[$ix+5].$pa[$ix+6].$pa[$ix+7];
-//   // echo $abyte.'<br>';
-//   $ix=$ix+8; // next byte
-//   $ibyte= base_convert($abyte, 2, 10) ;  // bin to dec
-//   echo chr($ibyte); // print that character
-//}
-
-
 
 ?>
 </pre>
