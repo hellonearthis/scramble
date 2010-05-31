@@ -34,26 +34,24 @@ foreach ($tb as $byte ) {           // loop through file byte by byte
 
 echo $P0.' p0<br>';
 echo $P1.' p1<br>';
-$p0len= strlen($P0);    // mid point used to unscramble the file.
+$p0len= strlen($P0);                    // mid point used to unscramble the file.
 echo $p0len.' lenght of part 0 in hex<br>';
 $nf=$P0.$P1;                                // nf is the new file in binary format
 
 // convert to hex like a raw zip file would be
 //echo binTohex($nf);  // not needed really in the test file
 
-// next would be to joint the two files and convet it back to decimal and
+//  joint the two files and convet it back to decimal and
 //  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0
 
-//skey
 $pa='';   // store decode file
-
 $pac=0; // index into part a and b
 $pbc=0;
 $sizeofbin=strlen($nf);
-for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a byte at a time..... errrr
-     for ($i=0; $i<=7; $i++){         // process it  the byte pulling it in bit by bit
+for($ii=0;$ii<=($sizeofbin/8);$ii++){   // cyctle through the whole file doing a byte at a time.
+     for ($i=0; $i<=7; $i++){                    // process it  the byte pulling it in bit by bit
         if(($skey[$i]=='0')){
-            $pa.=$nf[$pba];         // pull bit for part 0 and out in part a
+            $pa.=$nf[$pba];                        // pull bit for part 0 and out in part a
             $pba++;
         } else {
             $pa.=$nf[$p0len+$pbc];
