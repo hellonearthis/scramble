@@ -25,9 +25,11 @@ function binTohex($input)
     for($i=0; $i<=($sizeofbin/8); $i++) {    // get 8 bit and encode
        $abyte = $input[$ix].$input[$ix+1].$input[$ix+2].$input[$ix+3].$input[$ix+4].$input[$ix+5].$input[$ix+6].$input[$ix+7];
        $ix=$ix+8; // next byte
-       $ibyte= base_convert($abyte, 2, 16) ;  // bin to hex
+       $ibyte= '0x'.base_convert($abyte, 2, 16);  // bin to hex
        $coded=$coded.$ibyte;
     }
+    // explode $coded on , and pack?
+    //pack goes here
 return $coded;
 }
 

@@ -7,8 +7,9 @@
 include 'functions.php';
 
 $thebytes='that fox is  quick as'.  chr(4).chr(254);  // bytes to scramble, this will be the compress file.
-
 echo $thebytes.'<br>';
+
+echo '<br>Orgional file size '.strlen($thebytes).'<br>';
 
 $tb=str_split($thebytes);         // convert input file into an array of bytes
 
@@ -19,11 +20,12 @@ echo $skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].' s
 $P0='';
 $P1='';
 foreach ($tb as $byte ) {           // loop through file byte by byte
-    $bb= byte2bin($byte);           // make it binary
-                                                      // if key bit = 0 put bb bit in part 0 else put it into part 1
+    $bb= byte2bin($byte);           // make chars binary
+//    $bb= dec2bin($byte);           // make byte  binary
+                                                     // if key bit = 0 put bb bit in part 0 else put it into part 1
     for ($i=0; $i<=7; $i++){         // process the byte bit by bit
         if(($skey[$i]=='0')){
-            $P0.=$bb[$i];                // might get file size issues ?
+            $P0.=$bb[$i];
         } else {
             $P1.=$bb[$i];
         }
@@ -33,11 +35,11 @@ foreach ($tb as $byte ) {           // loop through file byte by byte
 echo $P0.' p0<br>';
 echo $P1.' p1<br>';
 $p0len= strlen($P0);    // mid point used to unscramble the file.
-echo dechex($p0len).' lenght of part 0 in hex<br>';
+echo $p0len.' lenght of part 0 in hex<br>';
 $nf=$P0.$P1;                                // nf is the new file in binary format
 
 // convert to hex like a raw zip file would be
-echo binTohex($nf);  // not needed really in the test file
+//echo binTohex($nf);  // not needed really in the test file
 
 // next would be to joint the two files and convet it back to decimal and
 //  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0

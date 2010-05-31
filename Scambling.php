@@ -8,69 +8,92 @@
         </style>
     </head>
     <body>
-      <pre>
-        <?php
-//Open file to compress.
-$scramble_this = 'test.zip ';
+<?php
+ set_time_limit ( 1020 );
+  include 'functions.php';
+
+//$scramble_this = 'test.zip ';                       //Open file to compress.
+$scramble_this = 'test.raw ';                       //Open file to compress.
 $filesize =filesize($scramble_this);
 $fhandle = fopen($scramble_this,'rb');
 $thebytes = fread($fhandle, $filesize);
 fclose($fhandle);
 
+echo 'Orgional file size '.strlen($thebytes).' of test file<br>';
+echo ord($thebytes[0]).ord($thebytes[1]).ord($thebytes[2]).ord($thebytes[3]).' header<br>';
 
-echo '<br>Orgional file size '.strlen($thebytes).'<br>';
+$coString = gzcompress ( $thebytes , 9 );                                      // test if compressed can be recompressed
+echo 'Zombie compressioned size: '.strlen($coString).'<br>';
 
-//$coString = gzcompress ( $thebytes , 9 );         // test if compressed can be recompressed
-//echo 'Zombie recompression: '.strlen($coString).'<br>';
-
-$orgional_bytes=$thebytes; // backup for each loop iteration
-for ($scramble_sequence=0; $scramble_sequence < 16; $scramble_sequence++ ){ // 4 bit sequence as repetes
-// conver scramble_sequence into an arror of 0's and 1's
-$skey = decbin($scramble_sequence);
-$skey= str_split(str_repeat('0',(4-strlen($skey))).$skey); // make it 4 bits long
-//print_r($skey);
-  $thebytes=$orgional_bytes;  // reset to orgional file bytes
-  $x=0;
-  for ($i = 0; $i < $filesize; $i++) {
-    if ($skey[$x] = 0){ 
-  //    put in $file0
-      echo $skey[$x].' $skey[$x] should be a 0<br>';
-    } else {//
-    echo $skey[$x].' $skey[$x] should be a 1<br>';
-   //   put in $file1
+//  need to add for loop to cycle through split key (1-254) or just one key as this is the test area before working with compressed files.
+$scramkey=102;                       // scramble key set
+$skey=dec2bin($scramkey);  // convert to binary
+echo 'scramble key is '.$skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
+$P0='';
+$P1='';
+for($c=0;$c<=$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
+    $byte=$thebytes[$c];                    // get byte to process
+    $bb= byte2bin($byte);                 // get binary represintation
+//   echo $bb.';'.dechex(ord($byte))."<br>";
+                                                            // if key bit = 0 put bb bit in part 0 else put it into part 1
+    for ($i=0; $i<=7; $i++){                // process the byte bit by bit
+        if(($skey[$i]=='0')){
+            $P0.=$bb[$i];                       // might get file size issues ?
+        } else {
+            $P1.=$bb[$i];
+        }
     }
+}
+echo $P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
 
-    $x++;
-    if ($x>3)$x=0;
-      echo '<br>'.$x.'= x '.$skey[$x].'= skey<br>';
-      //$thebytes[$i]
- }
-  
- // $compressed_string = gzcompress ( $thebytes , 9 );
-  echo '<br>Noted bytes and compressed size is '.strlen($compressed_string).'<br>';
+$plen= strlen($P0);                       // mid point used to unscramble the file.
+//echo dechex($p0len).' lenght of part 0 in hex<br>';
+echo $plen.' part 0 size, this is the binary decoding offset<br>';
+$nf=$P0.$P1;                                // nf is the new file in binary format
+
+// convert to hex like a raw zip file would be.....
+//$nf= binTohex($nf);         // todo: errr  not correct format, next to a x000 and then pack()
+
+echo strlen($nf).' scrambled size<br>';
+
+//$coString = gzcompress ( $nf , 9 );          // test if compressed can be recompressed
+//echo 'compressioned scrambled size: '.strlen($coString).'<br>';
+
+// next joint the two files and convet it back to decimal as well as
+//  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0
+
+//$nf = gzuncompress($coString); // uncompress
+//echo 'uncompressioned scrambled size: '.strlen($nf).'<br>';
+
+// convert it back to binary
+//
+
+//for($c=0;$c<=$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
+//    $byte=$nf[$c];                                  // get byte to process
+//    $nbb.= byte2bin($byte);                    // get binary represintation
+//}
+
+// decode file
+//skey
+$pa='';   // store decode file
+$pac=0; // index into part a and b
+$pbc=0;
+$sizeofbin=strlen($nf);
+for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a byte at a time..... errrr
+     for ($i=0; $i<=7; $i++){         // process it  the byte pulling it in bit by bit
+        if(($skey[$i]=='0')){
+            $pa.=$nf[$pba];         // pull bit for part 0 and out in part a
+            $pba++;
+        } else {
+            $pa.=$nf[$plen+$pbc];
+            $pbc++;
+        }
+     }
 }
 
-//for ($i = 0; $i < strlen($compressed_string); $i++) {
-//  echo strtoupper(dechex(ord($compressed_string[$i])));
-//  if ($i!=0){
-//    if ($i % 32){
-//          echo ',';
-//    } else {
-//          echo '<br>';
-//    }
-//  } else {
-//      echo ',';
-//  }
-//  if ($i % 2){ // not all the even bits
- //   $thebytes[$i]=(~$thebytes[$i]);
-//  }}
-
-
-
-//$compressed = gzcompress ( $compressed_string , 9 );
-//echo '<br>e compressed size '.strlen($compressed).'<br>';
+echo '<br>decoded<br>';
+echo $pa.' pa<br>'; // decoded bit file
 
 ?>
-</pre>
-    </body>
+ </body>
 </html>
