@@ -24,39 +24,43 @@ $coString = gzcompress ( $thebytes , 9 );                                      /
 echo '<b>Zombie compressioned size: '.strlen($coString).'</b><br>';
 
 //  need to add for loop to cycle through split key (1-254) or just one key as this is the test area before working with compressed files.
-$scramkey=102;                       // scramble key set
-$skey=dec2bin($scramkey);  // convert to binary
-echo 'scramble key is '.$skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
-$P0='';
-$P1='';
-echo 'bytes to compress are ';
-for($c=0;$c<$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
-    $byte=$thebytes[$c];                     // get byte to process
-    echo ord($byte).',';
-    $bb= byte2bin($byte);                   // get binary represintation todo: need a function to make into binary string
-                                                             // if key bit = 0 put bb bit in part 0 else put it into part 1
-    for ($i=0; $i<=7; $i++){                 // process the byte bit by bit
-        if(($skey[$i]=='0')){
-            $P0.=$bb[$i];                        // might get file size issues ?
-        } else {
-            $P1.=$bb[$i];
+for($scramkey=1;$scramkey<255;$scramkey++){
+ //        $scramkey=102;                       // scramble key set
+        echo $scramkey.' scramble key ';
+        $skey=dec2bin($scramkey);  // convert to binary
+        echo $skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
+        $P0='';
+        $P1='';
+        echo 'bytes to compress are ';
+        for($c=0;$c<$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
+            $byte=$thebytes[$c];                     // get byte to process
+            echo ord($byte).',';
+            $bb= byte2bin($byte);                   // get binary represintation todo: need a function to make into binary string
+                                                                     // if key bit = 0 put bb bit in part 0 else put it into part 1
+            for ($i=0; $i<=7; $i++){                 // process the byte bit by bit
+                if(($skey[$i]=='0')){
+                    $P0.=$bb[$i];                        // might get file size issues ?
+                } else {
+                    $P1.=$bb[$i];
+                }
+            }
         }
-    }
-}
-echo '<br><br>Scramble bits<br>'.$P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
+//        echo '<br><br>Scramble bits<br>'.$P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
 
-$plen= strlen($P0);                       // mid point used to unscramble the file.
-echo $plen.' part 0 size, this is the binary decoding index offset<br>';
-$nf=$P0.$P1;                                // nf is the new file in binary format
-echo 'scambled bits<br>'.$nf.'<br>';
-echo (strlen($nf)/8).' size of bin /8<br>';
-// convert to hex like a raw zip file would be.....
-$it= binTohex($nf);
+//        $plen= strlen($P0);                       // mid point used to unscramble the file.
+//        echo $plen.' part 0 size, this is the binary decoding index offset<br>';
+        $nf=$P0.$P1;                                // nf is the new file in binary format
+//        echo 'scambled bits<br>'.$nf.'<br>';
+//        echo (strlen($nf)/8).' size of bin /8<br>';
+        // convert to hex like a raw zip file would be.....
+        $it= binTohex($nf);
 
-echo strlen($it).' scrambled size<br>';
+//        echo strlen($it).' scrambled size<br>';
 
-$coString = gzcompress ( $it , 9 );          // test if compressed can be recompressed
-echo '<b>compressioned scrambled size: '.strlen($coString).'</b><br>';
+        $coString = gzcompress ( $it , 9 );          // test if compressed can be recompressed
+        echo '<b>compressioned scrambled size: '.strlen($coString).'</b><br>';
+}  // loop through scramble keys looking for best compression
+
 
 // next joint the two files and convet it back to decimal as well as
 //  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0
