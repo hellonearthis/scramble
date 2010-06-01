@@ -31,8 +31,9 @@ $skey=dec2bin($scramkey);  // convert to binary
 echo 'scramble key is '.$skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
 $P0='';
 $P1='';
-for($c=0;$c<=$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
+for($c=0;$c<$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
     $byte=$thebytes[$c];                     // get byte to process
+    echo ord($byte).'#';
     $bb= byte2bin($byte);                   // get binary represintation todo: need a function to make into binary string
 //   echo $bb.';'.dechex(ord($byte))."<br>";
                                                              // if key bit = 0 put bb bit in part 0 else put it into part 1
@@ -44,13 +45,13 @@ for($c=0;$c<=$filesize;$c++){          // cyctle through the whole file doing a 
         }
     }
 }
-echo $P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
+echo '<br>'.$P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
 
 $plen= strlen($P0);                       // mid point used to unscramble the file.
-//echo dechex($p0len).' lenght of part 0 in hex<br>';
-echo $plen.' part 0 size, this is the binary decoding offset<br>';
+echo $plen.' part 0 size, this is the binary decoding index offset<br>';
 $nf=$P0.$P1;                                // nf is the new file in binary format
 
+echo (strlen($nf)/8).' size of bin /8<br>';
 // convert to hex like a raw zip file would be.....
 $it= binTohex($nf);         // todo: it's added two exta bytes onto the end,
 
@@ -67,7 +68,7 @@ echo 'uncompressioned scrambled size: '.strlen($nf).'<br>';
 
 // convert it back to binary
 
-for($c=0;$c<=$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
+for($c=0;$c<$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
     $byte=$nf[$c];                                  // get byte to process
     $nbb.= byte2bin($byte);                    // get binary represintation
 }
