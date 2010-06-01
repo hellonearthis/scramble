@@ -18,3 +18,14 @@ Current code was a byte level split, but I think I will get better results by wo
 My coding skills are not the bestest and writing it in PHP isn’t the fastest language, but I’m doing this to test a theory 
 and to have some fun coding. It’s a simple idea and I’m sure there are greater minds that have thought of doing this,
 But it’s for fun.
+
+Update: It's basicly working, apart from not looping through to find the best scramble key and the display bug that only displays ascii characters.
+
+But...
+
+I have a small 32 byte file that I gzip which makes a 40 byte file
+I pass the small 32 byte file through the scrambler and gzip again and
+that makes a 32byte file Thats 8 bytes smaller, 20% more compressed.
+
+That's without looping through every posible scramble key (1-255) looking for best.
+   Time for more testing. 
