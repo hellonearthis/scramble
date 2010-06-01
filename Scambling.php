@@ -95,7 +95,16 @@ for($ii=0;$ii<($sizeofbin/8);$ii++){    // cyctle through the whole file doing a
 echo '<br>un scrabled bits<br>';
 echo strlen($pa).' length of pa size<br>Unscrambled bits<br>'.$pa.'<br>';
 
-echo binTohex($pa);
+// display unscrambled orgional bytes
+echo '<br>Decode bytes ';
+//$sizeofbin=strlen($pa);
+//for($z=0;$z<($sizeofbin/8);$z++){    // cyctle through the whole file doing a byte at a time.
+//   echo  pack ('C', bindec($pa[$z+0].$pa[$z+1].$pa[$z+2].$pa[$z+3].$pa[$z+4].$pa[$z+5].$pa[$z+6].$pa[$z+7]));
+//   $z=$z+7;   
+//}
+
+echo 'size of decoded '.strlen(binTohex($pa)).'<br>';
+echo binTohex($pa);  // only displays ascii
 
 ?>
  </body>
