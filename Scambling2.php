@@ -9,11 +9,13 @@
     </head>
     <body>
 <?php
- set_time_limit ( 1020 );
+ set_time_limit ( 12020 );
   include 'functions.php';
-
-//$scramble_this = 'test.zip ';                       //Open file to compress.
-$scramble_this = 'test.raw ';                       //Open file to compress.
+  
+ //Open file to compress.
+//$scramble_this = 'test.zip ';                      
+//$scramble_this = 'test.raw ';     
+$scramble_this = 'test.jpg ';                       
 $filesize =filesize($scramble_this);
 $fhandle = fopen($scramble_this,'rb');
 $thebytes = fread($fhandle, $filesize);
@@ -24,17 +26,17 @@ $coString = gzcompress ( $thebytes , 9 );                                      /
 echo '<b>Zombie compressioned size: '.strlen($coString).'</b><br>';
 
 //  need to add for loop to cycle through split key (1-254) or just one key as this is the test area before working with compressed files.
-for($scramkey=1;$scramkey<255;$scramkey++){
+for($scramkey=1;$scramkey<=254;$scramkey++){
  //        $scramkey=102;                       // scramble key set
         echo $scramkey.' scramble key ';
         $skey=dec2bin($scramkey);  // convert to binary
         echo $skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
         $P0='';
         $P1='';
-        echo 'bytes to compress are ';
+  //      echo 'bytes to compress are ';
         for($c=0;$c<$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
             $byte=$thebytes[$c];                     // get byte to process
-            echo ord($byte).',';
+     //       echo ord($byte).',';
             $bb= byte2bin($byte);                   // get binary represintation todo: need a function to make into binary string
                                                                      // if key bit = 0 put bb bit in part 0 else put it into part 1
             for ($i=0; $i<=7; $i++){                 // process the byte bit by bit
@@ -47,7 +49,7 @@ for($scramkey=1;$scramkey<255;$scramkey++){
         }
 //        echo '<br><br>Scramble bits<br>'.$P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
 
-//        $plen= strlen($P0);                       // mid point used to unscramble the file.
+        $plen= strlen($P0);                       // mid point used to unscramble the file.
 //        echo $plen.' part 0 size, this is the binary decoding index offset<br>';
         $nf=$P0.$P1;                                // nf is the new file in binary format
 //        echo 'scambled bits<br>'.$nf.'<br>';
@@ -99,7 +101,7 @@ echo '<br>Decode bytes ';
 $sizeofbin=strlen($pa);
 $zc=0;
 for($z=0;$z<($sizeofbin/8);$z++){    // cyctle through the whole file doing a byte at a time.
-   echo ord(pack ('C', bindec($pa[$zc+0].$pa[$zc+1].$pa[$zc+2].$pa[$zc+3].$pa[$zc+4].$pa[$zc+5].$pa[$zc+6].$pa[$zc+7])));
+ //  echo ord(pack ('C', bindec($pa[$zc+0].$pa[$zc+1].$pa[$zc+2].$pa[$zc+3].$pa[$zc+4].$pa[$zc+5].$pa[$zc+6].$pa[$zc+7])));
    $zc=$zc+8;
 }
 

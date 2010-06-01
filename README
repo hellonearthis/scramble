@@ -1,31 +1,35 @@
-Data Compression. Scrambling.
+Data Compression. Scrambling. 
 
-This doesn’t compress, it scrambles a compressed file for the hope of better compression.
-By having a reveseable function, the data could be organised into patterns that ‘could?’ be compressed again.
+When working with uncompressed data, I can get a smaller compressed file than just compressing.
+BUT when I scramble a compressed file,  no matter what scramble key is used, they all produce the same sized compressed file,
+no change at all resulting file size.
 
-DATA COMPRESSION through randoimisation. I will test on the byte level before I segment on to the bit level.
+tsting.php is a test file that was used to work out the code to encode and decode the test data.
+Scramble.php is the main scrambling program.
 
-My latest plan it to work on the data at the bit level, basic splitting the data into two file.
-The split sequence is decided by a byte value. 
-00000000 would split all the bits into Part 0
-11111111 would split all the bits into Part 1
-01010101 would split every other bit into Part 0 and Part 1
+The Idea is;  This doesn't compress, it scrambles a file for the hope of better compression.
+By having a reversible function, the data could be organised into patterns that can get better compression.
+The hope was/is to scramble compressed files so they can be compressed again. 
+DATA COMPRESSION through randomization. 
 
-Using a byte as the split key I can have 255 pattern combinations. (well slightly less)
+The code works on the data at the bit level, basic splitting the data into two files based on a binary scramble key .
 
-Current code was a byte level split, but I think I will get better results by working at the bit level.
+example:
 
-My coding skills are not the bestest and writing it in PHP isn’t the fastest language, but I’m doing this to test a theory 
-and to have some fun coding. It’s a simple idea and I’m sure there are greater minds that have thought of doing this,
-But it’s for fun.
+bits to scramble: 1100 1100 1100 1100 1100 1111
+scramble key 01010101
+result of scramble 
+  file0 1010 1010 11
+  file1 1010 1010 11
+file0file1 1010 1010 11 1010 1010 11
 
-Update: It's basicly working, apart from not looping through to find the best scramble key and the display bug that only displays ascii characters.
+Using a byte as the split/scramble key I can range from 1 to 254 
 
-But...
+What Next idea is it do a logical NOT operation on one of the files.
+What a not does is it inverses the bit,  so if it's a 1 it becomes a 0 or if it's a 0 then it becomes a 1.
+(I don't have much hope of this changing much, bit will try it out)
+Another possible step could be to doing multiple scramble passes to see if more (psudo)randomness can effect the results. 
 
-I have a small 32 byte file that I gzip which makes a 40 byte file
-I pass the small 32 byte file through the scrambler and gzip again and
-that makes a 32byte file Thats 8 bytes smaller, 20% more compressed.
-
-That's without looping through every posible scramble key (1-255) looking for best.
-   Time for more testing. 
+My coding skills are not the bestest and writing it in PHP isn't the fastest language, but I'm doing this to test a theory 
+and to have some fun coding.  It's a simple idea and I'm sure there are greater minds that have thought of doing this,
+But it's for fun and am/was interested in seeing if it could work.

@@ -48,7 +48,7 @@ $pa='';   // store decode file
 $pac=0; // index into part a and b
 $pbc=0;
 $sizeofbin=strlen($nf);
-for($ii=0;$ii<=($sizeofbin/8);$ii++){   // cyctle through the whole file doing a byte at a time.
+for($ii=0;$ii<($sizeofbin/8);$ii++){   // cyctle through the whole file doing a byte at a time.
      for ($i=0; $i<=7; $i++){                    // process it  the byte pulling it in bit by bit
         if(($skey[$i]=='0')){
             $pa.=$nf[$pba];                        // pull bit for part 0 and out in part a
