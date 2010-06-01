@@ -53,7 +53,7 @@ $nf=$P0.$P1;                                // nf is the new file in binary form
 echo 'scambled bits<br>'.$nf.'<br>';
 echo (strlen($nf)/8).' size of bin /8<br>';
 // convert to hex like a raw zip file would be.....
-$it= binTohex($nf);         // todo: it's added two exta bytes onto the end,
+$it= binTohex($nf);
 
 echo strlen($it).' scrambled size<br>';
 
@@ -71,14 +71,15 @@ for($c=0;$c<$filesize;$c++){           // cyctle through the whole file doing a 
     $byte=$nf[$c];                                  // get byte to process
     $nbb.= byte2bin($byte);                    // get binary represintation
 }
-echo '<br> bits to unscramble<br>'.$nbb.'<br>';
+echo '<br>bits to unscramble<br>'.$nbb.'<br>';
 // decode file
 
-$pa='';   // store decode file
+$pa='';   // store decode file bin version
+$pb='';  // string version
 $pac=0; // index into part a and b
 $pbc=0;
-$sizeofbin=strlen($nf);
-for($ii=0;$ii<=($sizeofbin/8);$ii++){  // cyctle through the whole file doing a byte at a time..... errrr
+$sizeofbin=strlen($nbb);
+for($ii=0;$ii<($sizeofbin/8);$ii++){    // cyctle through the whole file doing a byte at a time.
      for ($i=0; $i<=7; $i++){                   // process it  the byte pulling it in bit by bit
         if(($skey[$i]=='0')){
             $pa.=$nbb[$pba];                        // pull bit for part 0 and out in part a
@@ -87,13 +88,14 @@ for($ii=0;$ii<=($sizeofbin/8);$ii++){  // cyctle through the whole file doing a 
             $pa.=$nbb[$plen+$pbc];
             $pbc++;
         }
+
      }
 }
 
-echo '<br>decoded<br>';
+echo '<br>un scrabled bits<br>';
 echo strlen($pa).' length of pa size<br>Unscrambled bits<br>'.$pa.'<br>';
 
-//echo $pa[0].$pa[1].$pa[2].$pa[3].$pa[4].$pa[5].$pa[6].$pa[7].$pa[8].' pa<br>'; // decoded bit file
+echo binTohex($pa);
 
 ?>
  </body>
