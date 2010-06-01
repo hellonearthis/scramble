@@ -20,8 +20,6 @@ $thebytes = fread($fhandle, $filesize);
 fclose($fhandle);
 
 echo 'Orgional file size '.strlen($thebytes).' of test file<br>';
-echo ord($thebytes[0]).ord($thebytes[1]).ord($thebytes[2]).ord($thebytes[3]).' header<br>';
-
 $coString = gzcompress ( $thebytes , 9 );                                      // test if compressed can be recompressed
 echo '<b>Zombie compressioned size: '.strlen($coString).'</b><br>';
 
@@ -92,19 +90,15 @@ for($ii=0;$ii<($sizeofbin/8);$ii++){    // cyctle through the whole file doing a
      }
 }
 
-echo '<br>un scrabled bits<br>';
-echo strlen($pa).' length of pa size<br>Unscrambled bits<br>'.$pa.'<br>';
-
-// display unscrambled orgional bytes
+// display unscrambled  bytes , should be same as orgional
 echo '<br>Decode bytes ';
-//$sizeofbin=strlen($pa);
-//for($z=0;$z<($sizeofbin/8);$z++){    // cyctle through the whole file doing a byte at a time.
-//   echo  pack ('C', bindec($pa[$z+0].$pa[$z+1].$pa[$z+2].$pa[$z+3].$pa[$z+4].$pa[$z+5].$pa[$z+6].$pa[$z+7]));
-//   $z=$z+7;   
-//}
+$sizeofbin=strlen($pa);
+$zc=0;
+for($z=0;$z<($sizeofbin/8);$z++){    // cyctle through the whole file doing a byte at a time.
+   echo ord(pack ('C', bindec($pa[$zc+0].$pa[$zc+1].$pa[$zc+2].$pa[$zc+3].$pa[$zc+4].$pa[$zc+5].$pa[$zc+6].$pa[$zc+7])));
+   $zc=$zc+8;
+}
 
-echo 'size of decoded '.strlen(binTohex($pa)).'<br>';
-echo binTohex($pa);  // only displays ascii
 
 ?>
  </body>
