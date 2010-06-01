@@ -31,14 +31,14 @@ $skey=dec2bin($scramkey);  // convert to binary
 echo 'scramble key is '.$skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
 $P0='';
 $P1='';
-for($c=0;$c<=$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
-    $byte=$thebytes[$c];                    // get byte to process
-    $bb= byte2bin($byte);                 // get binary represintation
+for($c=0;$c<=$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
+    $byte=$thebytes[$c];                     // get byte to process
+    $bb= byte2bin($byte);                   // get binary represintation todo: need a function to make into binary string
 //   echo $bb.';'.dechex(ord($byte))."<br>";
-                                                            // if key bit = 0 put bb bit in part 0 else put it into part 1
-    for ($i=0; $i<=7; $i++){                // process the byte bit by bit
+                                                             // if key bit = 0 put bb bit in part 0 else put it into part 1
+    for ($i=0; $i<=7; $i++){                 // process the byte bit by bit
         if(($skey[$i]=='0')){
-            $P0.=$bb[$i];                       // might get file size issues ?
+            $P0.=$bb[$i];                        // might get file size issues ?
         } else {
             $P1.=$bb[$i];
         }
@@ -52,37 +52,36 @@ echo $plen.' part 0 size, this is the binary decoding offset<br>';
 $nf=$P0.$P1;                                // nf is the new file in binary format
 
 // convert to hex like a raw zip file would be.....
-//$nf= binTohex($nf);         // todo: errr  not correct format, next to a x000 and then pack()
+$it= binTohex($nf);         // todo: it's added two exta bytes onto the end,
 
-echo strlen($nf).' scrambled size<br>';
+echo strlen($it).' scrambled size<br>';
 
-//$coString = gzcompress ( $nf , 9 );          // test if compressed can be recompressed
-//echo 'compressioned scrambled size: '.strlen($coString).'<br>';
+$coString = gzcompress ( $it , 9 );          // test if compressed can be recompressed
+echo 'compressioned scrambled size: '.strlen($coString).'<br>';
 
 // next joint the two files and convet it back to decimal as well as
 //  add the 1st byte as the scramblekey followed by a long word 4 bytes (x00000000) of the size of part 0
 
-//$nf = gzuncompress($coString); // uncompress
-//echo 'uncompressioned scrambled size: '.strlen($nf).'<br>';
+$nf = gzuncompress($coString); // uncompress
+echo 'uncompressioned scrambled size: '.strlen($nf).'<br>';
 
 // convert it back to binary
-//
 
-//for($c=0;$c<=$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
-//    $byte=$nf[$c];                                  // get byte to process
-//    $nbb.= byte2bin($byte);                    // get binary represintation
-//}
-
+for($c=0;$c<=$filesize;$c++){           // cyctle through the whole file doing a byte at a time.
+    $byte=$nf[$c];                                  // get byte to process
+    $nbb.= byte2bin($byte);                    // get binary represintation
+}
+echo $nbb.'<br>';
 // decode file
 //skey
 $pa='';   // store decode file
 $pac=0; // index into part a and b
 $pbc=0;
 $sizeofbin=strlen($nf);
-for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a byte at a time..... errrr
-     for ($i=0; $i<=7; $i++){         // process it  the byte pulling it in bit by bit
+for($ii=0;$ii<=($sizeofbin/8);$ii++){  // cyctle through the whole file doing a byte at a time..... errrr
+     for ($i=0; $i<=7; $i++){                   // process it  the byte pulling it in bit by bit
         if(($skey[$i]=='0')){
-            $pa.=$nf[$pba];         // pull bit for part 0 and out in part a
+            $pa.=$nf[$pba];                        // pull bit for part 0 and out in part a
             $pba++;
         } else {
             $pa.=$nf[$plen+$pbc];
@@ -92,7 +91,9 @@ for($ii=0;$ii<=($sizeofbin/8);$ii++){ // cyctle through the whole file doing a b
 }
 
 echo '<br>decoded<br>';
-echo $pa.' pa<br>'; // decoded bit file
+echo strlen($pa).' length of pa size<br>';
+
+echo $pa[0].$pa[1].$pa[2].$pa[3].$pa[4].$pa[5].$pa[6].$pa[7].$pa[8].' pa<br>'; // decoded bit file
 
 ?>
  </body>
