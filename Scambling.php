@@ -24,27 +24,30 @@ $coString = gzcompress ( $thebytes , 9 );                                      /
 echo '<b>Zombie compressioned size: '.strlen($coString).'</b><br>';
 
 //  need to add for loop to cycle through split key (1-254) or just one key as this is the test area before working with compressed files.
-for($scramkey=1;$scramkey<255;$scramkey++){
- //        $scramkey=102;                       // scramble key set
+for($scramkey=1;$scramkey<255;$scramkey++){                     // loop through scramble keys
         echo $scramkey.' scramble key ';
         $skey=dec2bin($scramkey);  // convert to binary
         echo $skey[0].$skey[1].$skey[2].$skey[3].$skey[4].$skey[5].$skey[6].$skey[7].'<br>';
         $P0='';
         $P1='';
-        echo 'bytes to compress are ';
+    //    echo 'bytes to compress are ';
         for($c=0;$c<$filesize;$c++){          // cyctle through the whole file doing a byte at a time.
             $byte=$thebytes[$c];                     // get byte to process
-            echo ord($byte).',';
+      //      echo ord($byte).',';
             $bb= byte2bin($byte);                   // get binary represintation todo: need a function to make into binary string
                                                                      // if key bit = 0 put bb bit in part 0 else put it into part 1
             for ($i=0; $i<=7; $i++){                 // process the byte bit by bit
                 if(($skey[$i]=='0')){
                     $P0.=$bb[$i];                        // might get file size issues ?
                 } else {
-                    $P1.=(~$bb[$i]);
-                    //    $thebytes[$i]=(~$thebytes[$i]); 
+                    if($bb[$i]=='0'){                      // the NOT operation does the trick here
+                        $P1.=1;                             // because a not thinks its an int and not a bit
+                    } else {
+                        $P1.=0;
+                    }
                 }
-            }
+               
+             }
         }
 //        echo '<br><br>Scramble bits<br>'.$P0.' part a scrambled<br>'.$P1.' part b scrambled<br>';
 
@@ -88,7 +91,12 @@ for($ii=0;$ii<($sizeofbin/8);$ii++){    // cyctle through the whole file doing a
             $pa.=$nbb[$pba];                        // pull bit for part 0 and out in part a
             $pba++;
         } else {
-            $pa.=(~$nbb[$plen+$pbc]);
+             if($nbb[$plen+$pbc]=='0'){                      // the NOT operation does the trick here
+                        $pa.=1;                             // because a not thinks its an int and not a bit
+                    } else {
+                        $pa.=0;
+                    }
+        //    $pa.=(~$nbb[$plen+$pbc]);
             $pbc++;
         }
 
