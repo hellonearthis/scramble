@@ -25,9 +25,8 @@ file0file1 1010 1010 11 1010 1010 11
 
 Using a byte as the split/scramble key I can range from 1 to 254
 
-It looks like the NOT has done the trick, can compress a compressed file of 2000bytes to around 300bytes.
-
-What a not does is it inverses the bit, so if it’s a 1 it becomes a 0 or if it’s a 0 then it becomes a 1.
+It looks like the NOT didn’t do anything. 
+What a not does is it inverses the odd bits, so if it’s a 1 it becomes a 0 or if it’s a 0 then it becomes a 1.
 
 My coding skills are not the bestest and writing it in PHP isn’t the fastest language, but I’m doing this to test a theory 
 and to have some fun coding. It’s a simple idea and I’m sure there are greater minds that have thought of doing this,
