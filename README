@@ -1,16 +1,16 @@
-Data Compression. Scrambling. 
+Data Compression. Scrambling.
 
 When working with uncompressed data, I can get a smaller compressed file than just compressing.
-BUT when I scramble a compressed file,  no matter what scramble key is used, they all produce the same sized compressed file,
+BUT when I scramble a compressed file, no matter what scramble key is used, they all produce the same sized compressed file,
 no change at all resulting file size.
 
 tsting.php is a test file that was used to work out the code to encode and decode the test data.
 Scramble.php is the main scrambling program.
 
-The Idea is;  This doesn't compress, it scrambles a file for the hope of better compression.
+The Idea is; This doesn’t compress, it scrambles a file for the hope of better compression.
 By having a reversible function, the data could be organised into patterns that can get better compression.
 The hope was/is to scramble compressed files so they can be compressed again. 
-DATA COMPRESSION through randomization. 
+DATA COMPRESSION through randomization.
 
 The code works on the data at the bit level, basic splitting the data into two files based on a binary scramble key .
 
@@ -19,17 +19,16 @@ example:
 bits to scramble: 1100 1100 1100 1100 1100 1111
 scramble key 01010101
 result of scramble 
-  file0 1010 1010 11
-  file1 1010 1010 11
+file0 1010 1010 11
+file1 1010 1010 11
 file0file1 1010 1010 11 1010 1010 11
 
-Using a byte as the split/scramble key I can range from 1 to 254 
+Using a byte as the split/scramble key I can range from 1 to 254
 
-What Next idea is it do a logical NOT operation on one of the files.
-What a not does is it inverses the bit,  so if it's a 1 it becomes a 0 or if it's a 0 then it becomes a 1.
-(I don't have much hope of this changing much, bit will try it out)
-Another possible step could be to doing multiple scramble passes to see if more (psudo)randomness can effect the results. 
+It looks like the NOT has done the trick, can compress a compressed file of 2000bytes to around 300bytes.
 
-My coding skills are not the bestest and writing it in PHP isn't the fastest language, but I'm doing this to test a theory 
-and to have some fun coding.  It's a simple idea and I'm sure there are greater minds that have thought of doing this,
-But it's for fun and am/was interested in seeing if it could work.
+What a not does is it inverses the bit, so if it’s a 1 it becomes a 0 or if it’s a 0 then it becomes a 1.
+
+My coding skills are not the bestest and writing it in PHP isn’t the fastest language, but I’m doing this to test a theory 
+and to have some fun coding. It’s a simple idea and I’m sure there are greater minds that have thought of doing this,
+But it’s for fun and am/was interested in seeing if it could work.
