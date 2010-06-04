@@ -12,8 +12,8 @@
  set_time_limit ( 1020 );
   include 'functions.php';
 
-//$scramble_this = 'test.zip ';                       //Open file to compress.
-$scramble_this = 'test.raw ';                       //Open file to compress.
+$scramble_this = 'test.zip ';                       //Open file to compress.
+//$scramble_this = 'test.raw ';                       //Open file to compress.
 $filesize =filesize($scramble_this);
 $fhandle = fopen($scramble_this,'rb');
 $thebytes = fread($fhandle, $filesize);
@@ -41,7 +41,8 @@ for($scramkey=1;$scramkey<255;$scramkey++){
                 if(($skey[$i]=='0')){
                     $P0.=$bb[$i];                        // might get file size issues ?
                 } else {
-                    $P1.=$bb[$i];
+                    $P1.=(~$bb[$i]);
+                    //    $thebytes[$i]=(~$thebytes[$i]); 
                 }
             }
         }
@@ -87,7 +88,7 @@ for($ii=0;$ii<($sizeofbin/8);$ii++){    // cyctle through the whole file doing a
             $pa.=$nbb[$pba];                        // pull bit for part 0 and out in part a
             $pba++;
         } else {
-            $pa.=$nbb[$plen+$pbc];
+            $pa.=(~$nbb[$plen+$pbc]);
             $pbc++;
         }
 
